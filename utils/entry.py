@@ -1,12 +1,7 @@
-import argcomplete
-import os
 import sys
 
-import argparse
 from cmds.bash import bash
-from cmds import utils
-
-from compose.cli.main import main, setup_logging, TopLevelCommand
+from compose.cli.main import setup_logging, TopLevelCommand
 
 
 class UtilsCommands(TopLevelCommand):
@@ -50,10 +45,7 @@ class UtilsCommands(TopLevelCommand):
 
         Usage: bash [options] [SERVICE]
         """
-        service = options['SERVICE'] or utils.get_service(project)
-        container = utils.get_container(project, service)
-        cmd = 'docker exec -t -i {0} /bin/bash'.format(container.id)
-        os.system(cmd)
+        bash(project, options)
 
 
 def entry():
