@@ -19,7 +19,7 @@ setup(
     author_email='andym@mozilla.com',
     license='BSD',
     install_requires=['docker-compose'],
-    packages=['utils'],
+    packages=['utils', 'utils/cmds'],
     entry_points={
         'console_scripts': [
             'docker-utils = utils.entry:entry'
