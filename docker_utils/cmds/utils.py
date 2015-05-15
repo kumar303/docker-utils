@@ -1,5 +1,16 @@
 import os
 
+from compose.project import NoSuchService
+
+
+class NoContainer(NoSuchService):
+    def __init__(self, name):
+        self.name = name
+        self.msg = "No container for: %s" % self.name
+
+    def __str__(self):
+        return self.msg
+
 
 def get_service(project):
     cur = os.getcwd()
@@ -10,12 +21,12 @@ def get_service(project):
 
         new = os.path.dirname(directory)
         if new == directory:
-            raise ValueError('No project found.')
+            raise NoSuchService(cur)
         return walk(new)
 
     service = walk(cur)
     if service not in [s.name for s in project.services]:
-        raise ValueError('Not a valid project: {0}'.format(service))
+        raise NoSuchService(service)
 
     return service
 
@@ -23,5 +34,5 @@ def get_service(project):
 def get_container(project, service):
     containers = project.containers(service_names=[service])
     if not containers:
-        raise ValueError('No containers found for: {0}. '.format(service))
+        raise NoContainer(service)
     return containers[0]

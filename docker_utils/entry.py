@@ -1,7 +1,16 @@
+import logging
 import sys
+from inspect import getdoc
 
 from cmds.bash import bash
-from compose.cli.main import setup_logging, TopLevelCommand
+from compose.cli.docopt_command import NoSuchCommand
+from compose.cli.errors import UserError
+from compose.cli.main import parse_doc_section, setup_logging, TopLevelCommand
+from compose.project import NoSuchService, ConfigurationError
+from compose.service import BuildError
+from docker.errors import APIError
+
+log = logging.getLogger(__name__)
 
 
 class UtilsCommands(TopLevelCommand):
@@ -50,9 +59,26 @@ class UtilsCommands(TopLevelCommand):
 
 def entry():
     setup_logging()
-    command = UtilsCommands()
-    command.sys_dispatch()
-
+    try:
+        command = UtilsCommands()
+        command.sys_dispatch()
+    except KeyboardInterrupt:
+        log.error("\nAborting.")
+        sys.exit(1)
+    except (UserError, NoSuchService, ConfigurationError) as e:
+        log.error(e.msg)
+        sys.exit(1)
+    except NoSuchCommand as e:
+        log.error("No such command: %s", e.command)
+        log.error("")
+        log.error("\n".join(parse_doc_section("commands:", getdoc(e.supercommand))))
+        sys.exit(1)
+    except APIError as e:
+        log.error(e.explanation)
+        sys.exit(1)
+    except BuildError as e:
+        log.error("Service '%s' failed to build: %s" % (e.service.name, e.reason))
+        sys.exit(1)
 
 if __name__ == "__main__":
     sys.exit(entry())
