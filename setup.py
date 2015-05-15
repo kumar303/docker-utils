@@ -1,6 +1,6 @@
 import os
 import re
-from setuptools import setup
+from setuptools import find_packages, setup
 
 
 def get_version(package):
@@ -13,16 +13,16 @@ def get_version(package):
 
 setup(
     name='docker-utils',
-    version=get_version('utils'),
+    version=get_version('docker_utils'),
     description='Utilities for Docker',
     author='Andy McKay',
     author_email='andym@mozilla.com',
     license='BSD',
     install_requires=['docker-compose'],
-    packages=['utils', 'utils/cmds'],
+    packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'docker-utils = utils.entry:entry'
+            'docker-utils = docker_utils.entry:entry'
         ]
     },
     url='https://github.com/andymckay/docker-utils',

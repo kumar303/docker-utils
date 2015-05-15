@@ -1,6 +1,6 @@
 import os
 
-import utils
+from . import utils
 
 
 def bash(project, options):
