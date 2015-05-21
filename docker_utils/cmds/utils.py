@@ -36,3 +36,7 @@ def get_container(project, service):
     if not containers:
         raise NoContainer(service)
     return containers[0]
+
+
+def get_images(project):
+    return [s for s in project.services if not s.can_be_built()]

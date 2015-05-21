@@ -3,6 +3,7 @@ import sys
 from inspect import getdoc
 
 from cmds.bash import bash
+from cmds.server import listen
 from compose.cli.docopt_command import NoSuchCommand
 from compose.cli.errors import UserError
 from compose.cli.main import parse_doc_section, setup_logging, TopLevelCommand
@@ -15,7 +16,7 @@ log = logging.getLogger(__name__)
 
 class UtilsCommands(TopLevelCommand):
     """
-    A wrapper around docker compose with some extra commands.
+    A wrapper around docker-compose with some extra commands.
 
     Usage:
         docker-utils [options] [COMMAND] [ARGS...]
@@ -29,6 +30,7 @@ class UtilsCommands(TopLevelCommand):
 
     Commands:
         bash      Start a bash prompt in the container *
+        listen    Start a server that listens to Docker Hub webhooks *
 
         build     Build or rebuild services
         help      Get help on a command
@@ -50,11 +52,23 @@ class UtilsCommands(TopLevelCommand):
 
     def bash(self, project, options):
         """
-        Enter a bash prompt on the service. The container must be running.
+        Enter a bash prompt on a container running this image.
 
         Usage: bash [options] [SERVICE]
         """
         bash(project, options)
+
+    def listen(self, project, options):
+        """
+        Start a webserver that listens to Docker Hub webhook events.
+
+        Logs incoming webhook requests and verifies that it belongs to
+        this compose project. If it does, it issues a pull to get the latest
+        images.
+
+        Usage: listen [options] [HOST] [PORT]
+        """
+        listen(project, options)
 
 
 def entry():
