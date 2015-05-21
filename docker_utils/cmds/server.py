@@ -3,7 +3,6 @@ import json
 import logging
 import requests
 
-
 from utils import get_images
 log = logging.getLogger(__name__)
 
@@ -36,6 +35,10 @@ class handler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(422)
             self.end_headers()
             return
+
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(json.dumps(response))
 
 
 def listen(project, options):
