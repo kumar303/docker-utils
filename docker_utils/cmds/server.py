@@ -39,7 +39,7 @@ class handler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 
 def listen(project, options):
-    address = (options['HOST'] or 'localhost', options['PORT'] or 8000)
+    address = (options['HOST'] or 'localhost', int(options['PORT'] or 8000))
     httpd = BaseHTTPServer.HTTPServer(address, handler)
     handler.compose_project = project
     log.info('Server listening at: {0}:{1}. CTRL-C to exit.'.format(*address))
