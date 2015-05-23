@@ -3,6 +3,7 @@ import sys
 from inspect import getdoc
 
 from cmds.bash import bash
+from cmds.lint import lint
 from cmds.server import listen
 from compose.cli.docopt_command import NoSuchCommand
 from compose.cli.errors import UserError
@@ -30,6 +31,7 @@ class UtilsCommands(TopLevelCommand):
 
     Commands:
         bash      Start a bash prompt in the container *
+        lint      Lints the YAML file for common errors *
         listen    Start a server that listens to Docker Hub webhooks *
 
         build     Build or rebuild services
@@ -69,6 +71,14 @@ class UtilsCommands(TopLevelCommand):
         Usage: listen [options] [HOST] [PORT]
         """
         listen(project, options)
+
+    def lint(self, project, options):
+        """
+        Lints the docker-compose YAML file for common errors.
+
+        Usage: lint
+        """
+        lint(self, project, options)
 
 
 def entry():
